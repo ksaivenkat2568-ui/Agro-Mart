@@ -1,6 +1,6 @@
 AgroMart - Direct Farmer to Customer E-Commerce Platform
 
-AgroMart is a web-based digital marketplace designed to bridge the gap between agricultural producers (farmers) and end consumers. By eliminating intermediary-driven supply chains, AgroMart ensures better profit margins for farmers and fair, transparent pricing for consumers.
+AgroMart is a web-based digital marketplace designed to bridge the gap between agricultural producers (farmers) and end consumers. By eliminating intermediary-driven supply chains, AgroMart ensures better profit margins for farmers and fair, transparent pricing for consumers
 
 Features:
 Role-Based Dashboards: Distinct environments for Farmers and Customers.
