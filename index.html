@@ -1,572 +1,345 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroMart | Enterprise Agricultural Marketplace</title>
+    <title>AgroMart | Farmer to Consumer</title>
     <style>
-        /* Enterprise-Grade Minimalist Variables */
-        
-         :root {
-            --primary-color: #2E7D32;
-            --primary-hover: #1B5E20;
-            --bg-color: #F8FAFC;
-            --card-bg: #FFFFFF;
-            --text-main: #1E293B;
-            --text-light: #64748B;
-            --border-color: #E2E8F0;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --radius: 8px;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-        
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            color: #333;
         }
-        /* Navigation */
-        
-        nav {
-            background-color: var(--card-bg);
-            padding: 1rem 5%;
+
+        /* NAVBAR */
+        .navbar {
+            background: #2e7d32;
+            color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            padding: 15px 40px;
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
-        
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
+
+        .navbar h2 { margin: 0; cursor: pointer; }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: bold;
             cursor: pointer;
         }
-        
-        .nav-links {
+
+        .navbar a:hover { text-decoration: underline; }
+
+        .user-info-text { color: #ffeb3b; font-weight: bold; margin-left: 20px; }
+
+        /* VIEW MANAGEMENT */
+        .view { display: none; }
+        .active-view { display: block; }
+
+        /* HERO */
+        .hero {
+            height: 85vh;
+            background: url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854') center/cover no-repeat;
+            display: flex; justify-content: center; align-items: flex-start;
+            text-align: center; padding-top: 120px; position: relative; color: white;
+        }
+
+        .hero::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.45);
+        }
+
+        .hero-content { position: relative; z-index: 2; }
+        .hero h1 { font-size: 60px; text-shadow: 2px 2px 10px black; }
+        .hero h2 { font-size: 32px; text-shadow: 2px 2px 10px black; }
+        .hero p { font-size: 18px; margin-bottom: 30px; }
+
+        /* BUTTONS */
+        .hero-buttons button, .cart-btn, .form-section button, .pay-btn {
+            padding: 14px 28px; margin: 10px; font-size: 16px;
+            background: #2e7d32; color: white; border: none;
+            border-radius: 6px; cursor: pointer;
+        }
+
+        .hero-buttons button:hover, .cart-btn:hover { background: #66bb6a; }
+
+        /* PRODUCT GRID */
+        .product-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; margin-top: 30px; padding: 20px; }
+        .product { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px gray; width: 200px; text-align: center; }
+        .product img { width: 180px; height: 130px; object-fit: cover; border-radius: 8px; }
+        .product input { width: 60px; margin-top: 5px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; }
+
+        /* FORMS & TABLES */
+        .form-section { padding: 40px; text-align: center; min-height: 70vh; }
+        input[type="text"], input[type="email"], input[type="password"], input[type="number"], select { 
+            padding: 12px; margin: 10px; width: 300px; border: 1px solid #ccc; border-radius: 4px; 
+        }
+
+        table { width: 90%; margin: 20px auto; border-collapse: collapse; background: white; box-shadow: 0 0 10px #ddd; }
+        th, td { padding: 15px; border-bottom: 1px solid #ddd; text-align: center; }
+        th { background: #2e7d32; color: white; }
+
+        .cart-total-container { font-size: 22px; font-weight: bold; margin-top: 20px; color: #2e7d32; }
+
+        /* PAYMENT SPECIFIC UI */
+        .payment-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            background: #eee;
+            margin: 20px auto;
+            border: 2px dashed #999;
             display: flex;
-            gap: 1.5rem;
             align-items: center;
-        }
-        
-        .nav-links button {
-            background: none;
-            border: none;
-            color: var(--text-light);
-            font-weight: 500;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: color 0.2s;
-        }
-        
-        .nav-links button:hover,
-        .nav-links button.active {
-            color: var(--primary-color);
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white !important;
-            padding: 0.5rem 1.2rem;
-            border-radius: var(--radius);
-            transition: background-color 0.2s;
-            cursor: pointer;
-            border: none;
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-        }
-        /* Views Container */
-        
-        .view {
-            display: none;
-            padding: 3rem 5%;
-            max-width: 1200px;
-            margin: 0 auto;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        .view.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        /* Headers */
-        
-        .section-header {
-            margin-bottom: 2rem;
-            font-size: 1.75rem;
-            color: var(--text-main);
-        }
-        /* Forms */
-        
-        .auth-container,
-        .form-card {
-            background: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-sm);
-            max-width: 400px;
-            margin: 0 auto;
-            border: 1px solid var(--border-color);
-        }
-        
-        .form-card.large {
-            max-width: 600px;
-            margin: 0;
-        }
-        
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            font-size: 1rem;
-            outline: none;
-        }
-        
-        .form-group input:focus {
-            border-color: var(--primary-color);
-        }
-        /* Product Grid */
-        
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .product-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            text-align: center;
-            transition: transform 0.2s;
-        }
-        
-        .product-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .product-card h3 {
-            margin-bottom: 0.5rem;
-            color: var(--text-main);
-        }
-        
-        .product-card .price {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-        
-        .product-card input {
-            width: 60px;
-            padding: 0.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            margin-right: 0.5rem;
-            text-align: center;
-        }
-        /* Table (Cart) */
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-        }
-        
-        th,
-        td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        th {
-            background-color: #F1F5F9;
-            font-weight: 600;
-            color: var(--text-light);
-        }
-        
-        .cart-total {
-            text-align: right;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-top: 1.5rem;
-            color: var(--primary-color);
-        }
-        
-        .empty-state {
-            text-align: center;
-            color: var(--text-light);
-            padding: 3rem;
+            justify-content: center;
+            font-size: 12px;
+            color: #666;
         }
     </style>
 </head>
-
 <body>
 
-    <nav>
-        <div class="logo" onclick="app.navigate('home')">AgroMart</div>
-        <div class="nav-links" id="nav-container">
-        </div>
-    </nav>
-
-    <div id="home" class="view active">
-        <h1 class="section-header">Directly From Farmer to Consumer</h1>
-        <p style="color: var(--text-light); margin-bottom: 2rem;">A transparent, enterprise-grade marketplace eliminating intermediaries in the agricultural supply chain.</p>
-        <div style="display: flex; gap: 1rem;">
-            <button class="btn-primary" onclick="app.navigate('shop')">Browse Produce</button>
-            <button class="btn-primary" onclick="app.navigate('auth')" style="background:var(--text-main);">Join Platform</button>
+    <div class="navbar">
+        <h2 onclick="showView('home')">🌱 AgroMart</h2>
+        <div>
+            <a onclick="showView('home')">Home</a>
+            <a onclick="showView('products')">Products</a>
+            <a onclick="showView('cart')">🛒 Cart (<span id="cart-count">0</span>)</a>
+            <span id="auth-status">
+                <a onclick="showView('login')">Login</a>
+                <a onclick="showView('register')">Register</a>
+            </span>
         </div>
     </div>
 
-    <div id="auth" class="view">
-        <div class="auth-container">
-            <h2 class="section-header">Authentication</h2>
-            <div class="form-group">
-                <label>Name (For Registration only)</label>
-                <input type="text" id="auth-name" placeholder="Full Name">
-            </div>
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="auth-email" placeholder="user@domain.com">
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="auth-pass" placeholder="••••••••">
-            </div>
-            <div class="form-group">
-                <label>Role</label>
-                <select id="auth-role">
-                    <option value="customer">Customer</option>
-                    <option value="farmer">Farmer</option>
-                </select>
-            </div>
-            <div class="form-group" style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
-                <button class="btn-primary" onclick="app.login()" style="flex: 1;">Secure Login</button>
-                <button onclick="app.register()" style="flex: 1; background:var(--bg-color); border:1px solid var(--border-color); border-radius:8px; cursor: pointer;">Register</button>
+    <div id="home" class="view active-view">
+        <div class="hero">
+            <div class="hero-content">
+                <h1>AgroMart</h1>
+                <h2>Directly From Farmer to Consumer</h2>
+                <p>Fresh Fruits & Vegetables Without Middlemen</p>
+                <div class="hero-buttons">
+                    <button onclick="showView('login')">Farmer Login</button>
+                    <button onclick="showView('login')">Customer Login</button>
+                    <button onclick="showView('register')">Register</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="dashboard" class="view">
-        <h2 class="section-header">Farmer Dashboard</h2>
-        <div class="form-card large" style="margin-bottom: 2rem;">
-            <h3 style="margin-bottom: 1rem;">List New Produce</h3>
-            <div class="form-group">
-                <label>Product Name</label>
-                <input type="text" id="prod-name" placeholder="e.g., Organic Tomatoes">
+    <div id="products" class="view">
+        <div class="form-section">
+            <h2>Our Produce</h2>
+            <div class="product-grid">
+                <div class="product">
+                    <img src="https://images.unsplash.com/photo-1553279768-865429fa0078">
+                    <h3>Mango</h3><p>₹120 / kg</p>
+                    <input type="number" id="q1" value="1" min="1">
+                    <button class="cart-btn" onclick="addToCart('Mango', 120, 'q1')">Add to Cart</button>
+                </div>
+                <div class="product">
+                    <img src="https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6">
+                    <h3>Apple</h3><p>₹180 / kg</p>
+                    <input type="number" id="q2" value="1" min="1">
+                    <button class="cart-btn" onclick="addToCart('Apple', 180, 'q2')">Add to Cart</button>
+                </div>
+                <div class="product">
+                    <img src="https://images.unsplash.com/photo-1518977676601-b53f82aba655">
+                    <h3>Potato</h3><p>₹30 / kg</p>
+                    <input type="number" id="q3" value="1" min="1">
+                    <button class="cart-btn" onclick="addToCart('Potato', 30, 'q3')">Add to Cart</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Price per Kg (₹)</label>
-                <input type="number" id="prod-price" placeholder="e.g., 40">
-            </div>
-            <button class="btn-primary" onclick="app.addProduct()" style="margin-top: 1rem;">Publish Product</button>
-        </div>
-
-        <h3>Your Listed Products</h3>
-        <div class="product-grid" id="farmer-products" style="margin-top: 1rem;"></div>
-    </div>
-
-    <div id="shop" class="view">
-        <h2 class="section-header">Marketplace</h2>
-        <div class="product-grid" id="market-products">
         </div>
     </div>
 
     <div id="cart" class="view">
-        <h2 class="section-header">Shopping Cart</h2>
-        <div id="cart-container">
+        <div class="form-section">
+            <h2>Your Shopping Cart</h2>
+            <table>
+                <thead>
+                    <tr><th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th><th>Action</th></tr>
+                </thead>
+                <tbody id="cart-body"></tbody>
+            </table>
+            <div class="cart-total-container">Total Payable: ₹<span id="cart-total">0</span></div>
+            <button class="pay-btn" onclick="showView('payment')">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <div id="payment" class="view">
+        <div class="form-section">
+            <h2>Online Payment</h2>
+            <div class="payment-box">
+                <h3>Order Amount: ₹<span id="pay-amount">0</span></h3>
+                <p>Select Payment Method:</p>
+                
+                <select id="pay-method" onchange="togglePayFields()">
+                    <option value="upi">UPI (GPay / PhonePe / Paytm)</option>
+                    <option value="qr">Scan QR Code</option>
+                    <option value="cod">Cash on Delivery</option>
+                </select>
+
+                <div id="upi-input-container">
+                    <input type="text" id="upi-id" placeholder="Enter UPI ID (e.g. user@okaxis)">
+                </div>
+
+                <div id="qr-container" style="display:none;">
+                    <div class="qr-code">[ QR Code Image ]</div>
+                    <p style="font-size:12px;">Scan the code using any UPI app</p>
+                </div>
+
+                <div id="cod-text" style="display:none; color: #666; margin: 15px;">
+                    Pay directly to the farmer upon delivery.
+                </div>
+
+                <br>
+                <button class="pay-btn" onclick="handlePayment()">Confirm Order</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="login" class="view">
+        <div class="form-section">
+            <h2>Login</h2>
+            <input type="email" id="login-email" placeholder="Email Address"><br>
+            <input type="password" id="login-pass" placeholder="Password"><br>
+            <button onclick="loginUser()">Login</button>
+        </div>
+    </div>
+
+    <div id="register" class="view">
+        <div class="form-section">
+            <h2>Register</h2>
+            <input type="text" id="reg-name" placeholder="Full Name"><br>
+            <input type="email" id="reg-email" placeholder="Email Address"><br>
+            <input type="password" id="reg-pass" placeholder="Password"><br>
+            <button onclick="registerUser()">Sign Up</button>
         </div>
     </div>
 
     <script>
-        const app = {
-                state: {
-                    users: JSON.parse(localStorage.getItem('am_users')) || [],
-                    currentUser: JSON.parse(localStorage.getItem('am_currentUser')) || null,
-                    products: JSON.parse(localStorage.getItem('am_products')) || [{
-                        id: 1,
-                        name: "Fresh Mangoes",
-                        price: 120,
-                        farmerId: "system"
-                    }, {
-                        id: 2,
-                        name: "Organic Potatoes",
-                        price: 30,
-                        farmerId: "system"
-                    }, {
-                        id: 3,
-                        name: "Kashmiri Apples",
-                        price: 180,
-                        farmerId: "system"
-                    }],
-                    cart: JSON.parse(localStorage.getItem('am_cart')) || []
-                },
+        // --- NAVIGATION LOGIC ---
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(view => view.classList.remove('active-view'));
+            document.getElementById(viewId).classList.add('active-view');
+            window.scrollTo(0,0);
+            if(viewId === 'cart') loadCart();
+            if(viewId === 'payment') document.getElementById('pay-amount').innerText = calculateTotal();
+        }
 
-                saveData() {
-                    localStorage.setItem('am_users', JSON.stringify(this.state.users));
-                    localStorage.setItem('am_currentUser', JSON.stringify(this.state.currentUser));
-                    localStorage.setItem('am_products', JSON.stringify(this.state.products));
-                    localStorage.setItem('am_cart', JSON.stringify(this.state.cart));
-                },
+        function togglePayFields() {
+            const method = document.getElementById('pay-method').value;
+            document.getElementById('upi-input-container').style.display = (method === 'upi') ? 'block' : 'none';
+            document.getElementById('qr-container').style.display = (method === 'qr') ? 'block' : 'none';
+            document.getElementById('cod-text').style.display = (method === 'cod') ? 'block' : 'none';
+        }
 
-                navigate(viewId) {
-                    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-                    document.getElementById(viewId).classList.add('active');
-                    this.renderNav();
+        // --- AUTHENTICATION ---
+        function registerUser() {
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+            if (name && email && pass) {
+                localStorage.setItem('agroUser', JSON.stringify({ name, email, pass }));
+                alert("Registration Successful!");
+                showView('login');
+            } else { alert("Fill all fields."); }
+        }
 
-                    if (viewId === 'shop') this.renderMarket();
-                    if (viewId === 'dashboard') this.renderFarmerDashboard();
-                    if (viewId === 'cart') this.renderCart();
-                },
+        function loginUser() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            const storedUser = JSON.parse(localStorage.getItem('agroUser'));
+            if (storedUser && storedUser.email === email && storedUser.pass === pass) {
+                localStorage.setItem('isLoggedIn', 'true');
+                alert("Welcome back!");
+                checkLogin();
+                showView('home');
+            } else { alert("Invalid credentials."); }
+        }
 
-                renderNav() {
-                    const nav = document.getElementById('nav-container');
-                    const user = this.state.currentUser;
-
-                    if (!user) {
-                        nav.innerHTML = `
-                        <button onclick="app.navigate('shop')">Marketplace</button>
-                        <button class="btn-primary" onclick="app.navigate('auth')">Login / Register</button>
-                    `;
-                    } else if (user.role === 'farmer') {
-                        nav.innerHTML = `
-                        <button onclick="app.navigate('dashboard')">Dashboard</button>
-                        <button onclick="app.navigate('shop')">Marketplace</button>
-                        <button class="btn-primary" onclick="app.logout()">Logout (${user.name})</button>
-                    `;
-                    } else {
-                        const cartCount = this.state.cart.reduce((a, b) => a + b.qty, 0);
-                        nav.innerHTML = `
-                        <button onclick="app.navigate('shop')">Marketplace</button>
-                        <button onclick="app.navigate('cart')">Cart (${cartCount})</button>
-                        <button class="btn-primary" onclick="app.logout()">Logout (${user.name})</button>
-                    `;
-                    }
-                },
-
-                // Authentication
-                register() {
-                    const name = document.getElementById('auth-name').value.trim();
-                    const email = document.getElementById('auth-email').value.trim();
-                    const pass = document.getElementById('auth-pass').value;
-                    const role = document.getElementById('auth-role').value;
-
-                    if (!name || !email || !pass) return alert("Please fill all fields.");
-                    if (this.state.users.find(u => u.email === email)) return alert("Email already exists.");
-
-                    const newUser = {
-                        id: Date.now().toString(),
-                        name,
-                        email,
-                        pass,
-                        role
-                    };
-                    this.state.users.push(newUser);
-                    this.saveData();
-                    alert("Registration successful. You can now log in.");
-                },
-
-                login() {
-                    const email = document.getElementById('auth-email').value.trim();
-                    const pass = document.getElementById('auth-pass').value;
-
-                    const user = this.state.users.find(u => u.email === email && u.pass === pass);
-                    if (user) {
-                        this.state.currentUser = user;
-                        this.saveData();
-                        this.navigate(user.role === 'farmer' ? 'dashboard' : 'shop');
-                    } else {
-                        alert("Invalid credentials.");
-                    }
-                },
-
-                logout() {
-                    this.state.currentUser = null;
-                    this.state.cart = [];
-                    this.saveData();
-                    this.navigate('home');
-                },
-
-                // Farmer Actions
-                addProduct() {
-                    // Fixed syntax here to ensure perfect compatibility
-                    if (!this.state.currentUser || this.state.currentUser.role !== 'farmer') {
-                        return;
-                    }
-
-                    const name = document.getElementById('prod-name').value.trim();
-                    const price = Number(document.getElementById('prod-price').value);
-
-                    if (!name || !price) return alert("Enter valid product details.");
-
-                    this.state.products.push({
-                        id: Date.now(),
-                        name,
-                        price,
-                        farmerId: this.state.currentUser.id
-                    });
-
-                    this.saveData();
-                    document.getElementById('prod-name').value = '';
-                    document.getElementById('prod-price').value = '';
-                    this.renderFarmerDashboard();
-                },
-
-                renderFarmerDashboard() {
-                    const container = document.getElementById('farmer-products');
-                    const myProducts = this.state.products.filter(p => p.farmerId === this.state.currentUser.id);
-
-                    if (myProducts.length === 0) {
-                        container.innerHTML = `<p class="empty-state">No products listed yet.</p>`;
-                        return;
-                    }
-
-                    container.innerHTML = myProducts.map(p => `
-                    <div class="product-card">
-                        <h3>${p.name}</h3>
-                        <div class="price">₹${p.price}/kg</div>
-                        <p style="color:var(--text-light); font-size:0.8rem;">ID: ${p.id}</p>
-                    </div>
-                `).join('');
-                },
-
-                // Customer Actions
-                renderMarket() {
-                    const container = document.getElementById('market-products');
-                    container.innerHTML = this.state.products.map(p => `
-                    <div class="product-card">
-                        <h3>${p.name}</h3>
-                        <div class="price">₹${p.price}/kg</div>
-                        <input type="number" id="qty-${p.id}" value="1" min="1">
-                        <button class="btn-primary" onclick="app.addToCart(${p.id})">Add to Cart</button>
-                    </div>
-                `).join('');
-                },
-
-                addToCart(productId) {
-                    if (!this.state.currentUser || this.state.currentUser.role !== 'customer') {
-                        alert("Please login as a customer to add items to your cart.");
-                        return this.navigate('auth');
-                    }
-
-                    const qty = Number(document.getElementById(`qty-${productId}`).value);
-                    const product = this.state.products.find(p => p.id === productId);
-                    const existing = this.state.cart.find(c => c.id === productId);
-
-                    if (existing) {
-                        existing.qty += qty;
-                    } else {
-                        this.state.cart.push({...product,
-                            qty
-                        });
-                    }
-
-                    this.saveData();
-                    this.renderNav();
-                    alert(`${product.name} added to cart!`);
-                },
-
-                renderCart() {
-                    const container = document.getElementById('cart-container');
-
-                    if (this.state.cart.length === 0) {
-                        container.innerHTML = `<div class="empty-state">Your cart is empty.</div>`;
-                        return;
-                    }
-
-                    const total = this.state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-
-                    container.innerHTML = `
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Produce</th>
-                                <th>Price (₹)</th>
-                                <th>Qty (kg)</th>
-                                <th>Subtotal (₹)</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${this.state.cart.map((item, index) => `
-                                <tr>
-                                    <td><strong>${item.name}</strong></td>
-                                    <td>${item.price}</td>
-                                    <td>${item.qty}</td>
-                                    <td>${item.price * item.qty}</td>
-                                    <td><button onclick="app.removeFromCart(${index})" style="color:#ef4444; background:none; border:none; cursor:pointer; font-weight:600;">Remove</button></td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                    <div class="cart-total">Total: ₹${total}</div>
-                    <div style="text-align:right; margin-top:1.5rem;">
-                        <button class="btn-primary" onclick="app.checkout()">Confirm Order</button>
-                    </div>
-                `;
-            },
-
-            removeFromCart(index) {
-                this.state.cart.splice(index, 1);
-                this.saveData();
-                this.renderCart();
-                this.renderNav();
-            },
-
-            checkout() {
-                alert("Order placed successfully! Transaction ID: AG" + Math.floor(Math.random() * 90000));
-                this.state.cart = [];
-                this.saveData();
-                this.navigate('shop');
+        function checkLogin() {
+            const status = localStorage.getItem('isLoggedIn');
+            const user = JSON.parse(localStorage.getItem('agroUser'));
+            const display = document.getElementById('auth-status');
+            if (status === 'true' && display) {
+                display.innerHTML = `<span class="user-info-text">👤 ${user.name}</span> <a onclick="localStorage.removeItem('isLoggedIn'); location.reload();">Logout</a>`;
             }
-        };
+        }
 
-        // Initialize App
-        app.renderNav();
+        // --- CART LOGIC ---
+        let cart = JSON.parse(localStorage.getItem('agroCart')) || [];
+
+        function addToCart(name, price, qtyId) {
+            if (localStorage.getItem('isLoggedIn') !== 'true') {
+                alert("Please Login first.");
+                showView('login');
+                return;
+            }
+            const qty = parseInt(document.getElementById(qtyId).value);
+            const existing = cart.find(i => i.name === name);
+            if (existing) { existing.qty += qty; } 
+            else { cart.push({ name, price, qty }); }
+            saveCart();
+            alert(name + " added!");
+        }
+
+        function saveCart() {
+            localStorage.setItem('agroCart', JSON.stringify(cart));
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+
+        function calculateTotal() {
+            return cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        }
+
+        function loadCart() {
+            const body = document.getElementById('cart-body');
+            body.innerHTML = "";
+            cart.forEach((item, index) => {
+                const sub = item.price * item.qty;
+                body.innerHTML += `<tr><td>${item.name}</td><td>₹${item.price}</td><td>${item.qty}</td><td>₹${sub}</td><td><button onclick="removeItem(${index})">Remove</button></td></tr>`;
+            });
+            document.getElementById('cart-total').innerText = calculateTotal();
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            saveCart();
+            loadCart();
+        }
+
+        function handlePayment() {
+            const method = document.getElementById('pay-method').value;
+            if(method === 'upi' && !document.getElementById('upi-id').value) {
+                alert("Please enter a valid UPI ID");
+                return;
+            }
+            const id = "AG" + Math.floor(10000 + Math.random() * 90000);
+            alert("Order Confirmed via " + method.toUpperCase() + "! Order ID: " + id);
+            cart = [];
+            saveCart();
+            showView('home');
+        }
+
+        // Initialize
+        checkLogin();
+        document.getElementById('cart-count').innerText = cart.length;
     </script>
 </body>
-
 </html>
